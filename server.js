@@ -1,23 +1,23 @@
-// const express = require('express');
-// const morgan = require('morgan')
-// const movieRouter = require('./routes/movieRouter');
+const express = require('express');
+const morgan = require('morgan')
+const movieRouter = require('./routes/movieRouter');
 
-// const hostname = "localhost";
-// const port = 3000;
+const hostname = "localhost";
+const port = 3000;
 
-// const app = express();
-// app.use(morgan('dev'));
+const app = express();
+app.use(morgan('dev'));
 
-// app.use('/movies', movieRouter);
+app.use('/movies', movieRouter);
 
-// app.use(express.static(__dirname + '/public'));
+app.use(express.static(__dirname + '/public'));
 
-// app.use((req, res) =>{
-//     res.statusCode = 200;
-//     res.setHeader('Content-Type', 'text/html');
-//     res.end('<html><body><h1>This is an Express Server</h1></body></html>');
-// });
+app.use((req, res) =>{
+    res.statusCode = 200;
+    res.setHeader('Content-Type', 'text/html');
+    res.end('<html><body><h1>This is an Express Server</h1></body></html>');
+});
 
-// app.listen(port, hostname, () => {
-//     console.log(`Server running at http://${hostname}:${port}/`);
-// });
+ app.listen(port, hostname, () => {
+     console.log(`Server running at http://${hostname}:${port}/`);
+ });
