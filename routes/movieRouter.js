@@ -1,42 +1,78 @@
-const express = require('express');
+const express = require("express");
+const Movie = require("../models/movies");
+
 const movieRouter = express.Router();
 
-movieRouter.route('/')
-.all((req, res, next) => {
-    res.statusCode = 200;
-    res.setHeader('Content-Type', 'text/plain');
-    next()
-})
-.get((req, res) => {
-    res.end('Will send all movies');
-})
-.post((req, res) => {
-    res.end('Will post movies')
-})
-.put((req, res) => {
-    res.end('Put not accessable on /movies')
-})
-.delete((req, res) => {
-    res.end('Deleting all movies')
-});
+movieRouter
+  .route("/")
+  .get((req, res, next) => {
+    Movie.find()
+      .then((movies) => {
+        res.statusCode = 200;
+        res.setHeader("Content-Type", "application/json");
+        res.json(movies);
+      })
+      .catch((err) => next(err));
+  })
+  .post((req, res, next) => {
+    Movie.create(req.body)
+      .then((movie) => {
+        console.log("Movie Posted", movie);
+        res.statusCode = 200;
+        res.setHeader("Content-Type", "application/json");
+        res.json(movie);
+      })
+      .catch((err) => next(err));
+  })
+  .put((req, res) => {
+    res.end("Put not accessable on /movies");
+  })
+  .delete((req, res) => {
+    res.end(
+      "Delete all movies is not supported on /movies, must delete one movie at a time"
+    );
+  });
 
-movieRouter.route('/:movieId')
-.all((req, res, next) => {
-    res.statusCode = 200;
-    res.setHeader('Content-Type', 'text/plain');
-    next()
-})
-.get((req, res) => {
-    res.end(`Sending movie: ${req.params.movieId}`);
-})
-.post((req, res) => {
-    res.end(`Posting movie: ${req.params.movieId}`)
-})
-.put((req, res) => {
-    res.end(`Updating movie: ${req.params.movieId}`)
-})
-.delete((req, res) => {
-    res.end(`Deleting movie: ${req.params.movieId}`)
-});
+movieRouter
+  .route("/:movieId")
+  .get((req, res, next) => {
+    Movie.findById(req.params.movieId)
+      .then((movie) => {
+        res.statusCode = 200;
+        res.setHeader("Content-Type", "application/json");
+        res.json(movie);
+      })
+      .catch((err) => next(err));
+  })
+  .post((req, res) => {
+    res.statusCode = 403;
+    res.end(`Post operation not supported on /movie/${req.params.movieId}`);
+  })
+  .put((req, res, next) => {
+    Movie.findByIdAndUpdate(
+      req.params.movieId,
+      {
+        $set: req.body,
+      },
+      { new: true }
+    )
+      .then((movie) => {
+        res.statusCode = 200;
+        res.setHeader("Content-Type", "application/json");
+        res.json(movie);
+      })
+      .catch((err) => next(err));
+  })
+  .delete((req, res) => {
+    Movie.findByIdAndDelete(req.params.movieId)
+    .then(response => {
+        res.statusCode = 200;
+        res.setHeader('Content-Type', 'application/json');
+        res.json(response);
+    })
+    .catch(err => {
+        next(err);
+    })
+  });
 
 module.exports = movieRouter;
