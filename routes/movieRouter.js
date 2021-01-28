@@ -1,5 +1,7 @@
 const express = require("express");
+const passport = require("passport");
 const Movie = require("../models/movies");
+//const authenticate = require('../authenticate');
 
 const movieRouter = express.Router();
 
@@ -14,7 +16,7 @@ movieRouter
       })
       .catch((err) => next(err));
   })
-  .post((req, res, next) => {
+  .post( (req, res, next) => {
     Movie.create(req.body)
       .then((movie) => {
         console.log("Movie Posted", movie);
@@ -24,10 +26,10 @@ movieRouter
       })
       .catch((err) => next(err));
   })
-  .put((req, res) => {
+  .put( (req, res) => {
     res.end("Put not accessable on /movies");
   })
-  .delete((req, res) => {
+  .delete( (req, res) => {
     res.end(
       "Delete all movies is not supported on /movies, must delete one movie at a time"
     );
@@ -44,11 +46,11 @@ movieRouter
       })
       .catch((err) => next(err));
   })
-  .post((req, res) => {
+  .post( (req, res) => {
     res.statusCode = 403;
     res.end(`Post operation not supported on /movie/${req.params.movieId}`);
   })
-  .put((req, res, next) => {
+  .put( (req, res, next) => {
     Movie.findByIdAndUpdate(
       req.params.movieId,
       {
@@ -63,7 +65,7 @@ movieRouter
       })
       .catch((err) => next(err));
   })
-  .delete((req, res) => {
+  .delete( (req, res) => {
     Movie.findByIdAndDelete(req.params.movieId)
     .then(response => {
         res.statusCode = 200;

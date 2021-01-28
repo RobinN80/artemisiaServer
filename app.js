@@ -1,7 +1,7 @@
 var createError = require('http-errors');
 var express = require('express');
 var path = require('path');
-var cookieParser = require('cookie-parser');
+//var cookieParser = require('cookie-parser');
 var logger = require('morgan');
 const session = require('express-session');
 const FileStore = require('session-file-store')(session);
@@ -33,7 +33,7 @@ app.set('view engine', 'jade');
 app.use(logger('dev'));
 app.use(express.json());
 app.use(express.urlencoded({ extended: false }));
-app.use(cookieParser());
+//app.use(cookieParser('12345-67890-09876-54321'));
 app.use(express.static(path.join(__dirname, 'public')));
 
 app.use(session({
@@ -50,10 +50,11 @@ app.use(passport.session());
 
 app.use('/', indexRouter);
 app.use('/users', usersRouter);
+app.use('/movies', movieRouter);
 
 function auth(req, res, next) {
   console.log(req.user);
-  if(!req.user){
+  if(!req.user) {
     const err = new Error('You are not authenticated');
     err.status = 401;
     return next(err);
@@ -63,7 +64,7 @@ function auth(req, res, next) {
 }
 
 app.use(auth);
-app.use('/movies', movieRouter);
+
 
 // catch 404 and forward to error handler
 app.use(function(req, res, next) {

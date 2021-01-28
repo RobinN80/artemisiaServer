@@ -28,7 +28,7 @@ router.post('/signup', (req, res) => {
   );
 });
 
-router.post('/login', passport.authenticate('local'),(req, res) => {
+router.post('/login', passport.authenticate('local'), (req, res) => {
   res.statusCode = 200;
   res.setHeader('Content-Type', 'application/json');
   res.json({success: true, status: 'You are successfully logged in!'})
@@ -38,7 +38,7 @@ router.post('/login', passport.authenticate('local'),(req, res) => {
 router.get('/logout', (req, res, next) =>{
   if (req.session) {
     req.session.destroy();
-    //req.clearCookie('session-id');
+    res.clearCookie('session-id');
     res.redirect('/');
   } else {
     const err = new Error('You are not logged in.');
