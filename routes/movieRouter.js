@@ -1,7 +1,7 @@
 const express = require("express");
 const passport = require("passport");
 const Movie = require("../models/movies");
-//const authenticate = require('../authenticate');
+const authenticate = require('../authenticate');
 
 const movieRouter = express.Router();
 
@@ -11,12 +11,12 @@ movieRouter
     Movie.find()
       .then((movies) => {
         res.statusCode = 200;
-        res.setHeader("Content-Type", "application/json");
+        res.setHeader("Content-Type", "application/json"); 
         res.json(movies);
       })
       .catch((err) => next(err));
   })
-  .post( (req, res, next) => {
+  .post(authenticate.verifyAdmin, (req, res, next) => {
     Movie.create(req.body)
       .then((movie) => {
         console.log("Movie Posted", movie);
@@ -26,10 +26,10 @@ movieRouter
       })
       .catch((err) => next(err));
   })
-  .put( (req, res) => {
+  .put(authenticate.verifyAdmin, (req, res) => {
     res.end("Put not accessable on /movies");
   })
-  .delete( (req, res) => {
+  .delete(authenticate.verifyAdmin, (req, res) => {
     res.end(
       "Delete all movies is not supported on /movies, must delete one movie at a time"
     );
@@ -46,7 +46,7 @@ movieRouter
       })
       .catch((err) => next(err));
   })
-  .post( (req, res) => {
+  .post(authenticate.verifyAdmin, (req, res) => {
     res.statusCode = 403;
     res.end(`Post operation not supported on /movie/${req.params.movieId}`);
   })
@@ -65,7 +65,7 @@ movieRouter
       })
       .catch((err) => next(err));
   })
-  .delete( (req, res) => {
+  .delete(authenticate.verifyAdmin, (req, res) => {
     Movie.findByIdAndDelete(req.params.movieId)
     .then(response => {
         res.statusCode = 200;
