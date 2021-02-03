@@ -11,6 +11,7 @@ const authenticate = require('./authenticate');
 var indexRouter = require('./routes/index');
 var usersRouter = require('./routes/users');
 const movieRouter = require('./routes/movieRouter');
+const archiveRouter = require('./routes/archiveRouter');
 
 const mongoose = require('mongoose');
 
@@ -60,6 +61,7 @@ app.use(passport.session());
 app.use('/', indexRouter);
 app.use('/users', usersRouter);
 app.use('/movies', movieRouter);
+app.use('/archives', archiveRouter);
 
 function auth(req, res, next) {
   console.log(req.user);

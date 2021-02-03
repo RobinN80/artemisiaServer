@@ -1,15 +1,15 @@
 const express = require("express");
 const passport = require("passport");
-const Movie = require("../models/movies");
+//const Movie = require("../models/movies");
 const MovieArchive = require('../models/archives');
 const authenticate = require('../authenticate');
 
-const movieRouter = express.Router();
+const archiveRouter = express.Router();
 
-movieRouter
+archiveRouter
   .route("/")
   .get((req, res, next) => {
-    Movie.find()
+    MovieArchive.find()
       .then((movies) => {
         res.statusCode = 200;
         res.setHeader("Content-Type", "application/json"); 
@@ -18,9 +18,9 @@ movieRouter
       .catch((err) => next(err));
   })
   .post(authenticate.verifyAdmin, (req, res, next) => {
-    Movie.create(req.body)
+    MovieArchive.create(req.body)
       .then((movie) => {
-        console.log("Movie Posted", movie);
+        console.log("Movie Archived", movie);
         res.statusCode = 200;
         res.setHeader("Content-Type", "application/json");
         res.json(movie);
@@ -28,18 +28,18 @@ movieRouter
       .catch((err) => next(err));
   })
   .put(authenticate.verifyAdmin, (req, res) => {
-    res.end("Put not accessable on /movies");
+    res.end("Put not accessable on /archives");
   })
   .delete(authenticate.verifyAdmin, (req, res) => {
     res.end(
-      "Delete all movies is not supported on /movies, must delete one movie at a time"
+      "Delete all movies is not supported on /archives, must delete one archive at a time"
     );
   });
 
-movieRouter
-  .route("/:movieId")
+archiveRouter
+  .route("/:archiveId")
   .get((req, res, next) => {
-    Movie.findById(req.params.movieId)
+    MovieArchive.findById(req.params.archiveId)
       .then((movie) => {
         res.statusCode = 200;
         res.setHeader("Content-Type", "application/json");
@@ -49,11 +49,11 @@ movieRouter
   })
   .post(authenticate.verifyAdmin, (req, res) => {
     res.statusCode = 403;
-    res.end(`Post operation not supported on /movie/${req.params.movieId}`);
+    res.end(`Post operation not supported on /archives/${req.params.archiveId}`);
   })
   .put( (req, res, next) => {
-    Movie.findByIdAndUpdate(
-      req.params.movieId,
+    MovieArchive.findByIdAndUpdate(
+      req.params.archiveId,
       {
         $set: req.body,
       },
@@ -67,7 +67,7 @@ movieRouter
       .catch((err) => next(err));
   })
   .delete(authenticate.verifyAdmin, (req, res) => {
-    Movie.findByIdAndDelete(req.params.movieId)
+    MovieArchive.findByIdAndDelete(req.params.archiveId)
     .then(response => {
         res.statusCode = 200;
         res.setHeader('Content-Type', 'application/json');
@@ -78,4 +78,4 @@ movieRouter
     })
   });
 
-module.exports = movieRouter;
+module.exports = archiveRouter;
